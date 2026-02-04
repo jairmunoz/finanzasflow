@@ -1,0 +1,5 @@
+{
+  "name": "FinanzasFlow",
+  "description": "A comprehensive personal finance PWA focusing on transactions, recurrent expenses, loans, and savings tracking.",
+  "requestFramePermissions": []
+}
