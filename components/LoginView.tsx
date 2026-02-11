@@ -139,6 +139,8 @@ export const LoginView: React.FC = () => {
             </button>
         </div>
       </div>
+      
+      <p className="text-xs text-slate-400 mt-4 z-10">v{__APP_VERSION__} (Build #{__BUILD_NUMBER__})</p>
     </div>
   );
 };

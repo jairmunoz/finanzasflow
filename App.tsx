@@ -96,6 +96,7 @@ const AppLayout: React.FC = () => {
              </div>
              FinanzaFlow
            </div>
+           <p className="text-xs text-slate-400 mt-1">v{__APP_VERSION__} (#{__BUILD_NUMBER__})</p>
         </div>
 
         <nav className="flex-1 p-4 overflow-y-auto no-scrollbar">
