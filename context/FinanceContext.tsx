@@ -12,6 +12,8 @@ interface FinanceContextType {
   categories: Category[]; // User defined categories
   isLoading: boolean;
   addTransaction: (t: Omit<Transaction, 'id'>) => Promise<void>;
+  updateTransaction: (t: Transaction) => Promise<void>;
+  deleteTransaction: (id: string) => Promise<void>;
   addFixedExpense: (e: Omit<FixedExpense, 'id'>) => Promise<void>;
   updateFixedExpense: (e: FixedExpense) => Promise<void>;
   deleteFixedExpense: (id: string) => Promise<void>;
@@ -101,6 +103,18 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
   const addTransaction = async (t: Omit<Transaction, 'id'>) => {
     if (!user) return;
     await storageService.addTransaction(user.uid, t);
+    await fetchData();
+  };
+
+  const updateTransaction = async (t: Transaction) => {
+    if (!user) return;
+    await storageService.updateTransaction(user.uid, t);
+    await fetchData();
+  };
+
+  const deleteTransaction = async (id: string) => {
+    if (!user) return;
+    await storageService.deleteTransaction(user.uid, id);
     await fetchData();
   };
 
@@ -226,6 +240,8 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
       categories,
       isLoading,
       addTransaction,
+      updateTransaction,
+      deleteTransaction,
       addFixedExpense,
       updateFixedExpense,
       deleteFixedExpense,

@@ -48,6 +48,17 @@ export const storageService = {
     return { ...transaction, id: docRef.id };
   },
 
+  async updateTransaction(userId: string, transaction: Transaction): Promise<void> {
+    const docRef = doc(db, 'users', userId, 'transactions', transaction.id);
+    const { id, ...data } = transaction;
+    await updateDoc(docRef, data);
+  },
+
+  async deleteTransaction(userId: string, transactionId: string): Promise<void> {
+    const docRef = doc(db, 'users', userId, 'transactions', transactionId);
+    await deleteDoc(docRef);
+  },
+
   // --- Fixed Expenses ---
   async getFixedExpenses(userId: string): Promise<FixedExpense[]> {
     const q = query(getCollectionRef(userId, 'fixedExpenses'));
