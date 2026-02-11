@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { Card } from '../ui/Atoms';
-import { ArrowUpRight, ArrowDownRight, Search, Filter } from 'lucide-react';
-import { TransactionType } from '../../types';
+import { TransactionForm } from '../TransactionForm';
+import { ArrowUpRight, ArrowDownRight, Search, Filter, Pencil, Trash2 } from 'lucide-react';
+import { TransactionType, Transaction } from '../../types';
 import { CATEGORIES } from '../../constants';
 
 // --- Helper Formatter ---
@@ -11,7 +12,8 @@ const formatCurrency = (val: number) => {
 };
 
 export const HistoryView: React.FC = () => {
-    const { transactions, getCategoryOptions } = useFinance();
+    const { transactions, getCategoryOptions, deleteTransaction } = useFinance();
+    const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     
     // --- Filters ---
@@ -23,6 +25,20 @@ export const HistoryView: React.FC = () => {
     const handleTypeChange = (val: string) => {
         setTypeFilter(val as any);
         setCategoryFilter('all');
+    };
+
+    const handleDelete = async (id: string) => {
+        if (confirm('¿Estás seguro de eliminar esta transacción?')) {
+            await deleteTransaction(id);
+        }
+    };
+
+    const handleEdit = (transaction: Transaction) => {
+        setEditingTransaction(transaction);
+    };
+
+    const handleCloseEdit = () => {
+        setEditingTransaction(null);
     };
 
     // Calculate available categories based on selected type
@@ -70,7 +86,7 @@ export const HistoryView: React.FC = () => {
         }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }, [transactions, searchTerm, typeFilter, categoryFilter, monthFilter]);
 
-    return (
+    const content = (
         <div className="pb-24 md:pb-6 space-y-6 animate-fade-in">
             <div className="flex flex-col gap-4">
                 <h1 className="text-2xl font-bold text-slate-800">Historial</h1>
@@ -153,20 +169,50 @@ export const HistoryView: React.FC = () => {
                                </div>
                              </div>
                           </div>
-                          <div className="text-right">
-                              <p className={`font-bold whitespace-nowrap ${t.type === 'income' ? 'text-green-600' : 'text-slate-800'}`}>
-                                {t.type === 'expense' ? '-' : '+'}{formatCurrency(t.amount)}
-                              </p>
-                              {t.createdAt && (
-                                <p className="text-[10px] text-slate-300 mt-1">
-                                  Reg: {new Date(t.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          <div className="flex items-center gap-3">
+                              <div className="text-right">
+                                <p className={`font-bold whitespace-nowrap ${t.type === 'income' ? 'text-green-600' : 'text-slate-800'}`}>
+                                  {t.type === 'expense' ? '-' : '+'}{formatCurrency(t.amount)}
                                 </p>
-                              )}
+                                {t.createdAt && (
+                                  <p className="text-[10px] text-slate-300 mt-1">
+                                    Reg: {new Date(t.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex gap-1">
+                                <button 
+                                  onClick={() => handleEdit(t)}
+                                  className="p-1.5 bg-white shadow-sm border border-slate-200 rounded-lg text-slate-400 hover:text-brand-600 transition-colors"
+                                  title="Editar transacción"
+                                >
+                                  <Pencil size={14} />
+                                </button>
+                                <button 
+                                  onClick={() => handleDelete(t.id)}
+                                  className="p-1.5 bg-white shadow-sm border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 transition-colors"
+                                  title="Eliminar transacción"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
                           </div>
                         </Card>
                     ))
                 )}
             </div>
         </div>
+    );
+
+    return (
+        <>
+            {content}
+            {editingTransaction && (
+                <TransactionForm 
+                    onClose={handleCloseEdit} 
+                    transaction={editingTransaction} 
+                />
+            )}
+        </>
     );
 };
