@@ -24,8 +24,9 @@ export const TransactionForm: React.FC<Props> = ({ onClose, initialType = 'expen
 
   // Reset category when type changes
   useEffect(() => {
-    setCategory(categoryOptions[0] || '');
-  }, [type, categoryOptions]);
+    const options = getCategoryOptions(type);
+    setCategory(options[0] || '');
+  }, [type, getCategoryOptions]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
