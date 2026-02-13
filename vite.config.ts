@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         versionPlugin(),
         VitePWA({
           registerType: 'autoUpdate',
-          includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+          includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg', 'pwa-192x192.png', 'pwa-512x512.png'],
           manifest: {
             name: 'Finance App',
             short_name: 'Finance',
@@ -32,6 +32,21 @@ export default defineConfig(({ mode }) => {
                 src: 'pwa-512x512.png',
                 sizes: '512x512',
                 type: 'image/png'
+              }
+            ],
+            screenshots: [
+              {
+                src: 'pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                form_factor: 'wide',
+                label: 'Desktop'
+              },
+              {
+                src: 'pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                label: 'Mobile'
               }
             ]
           }
